@@ -186,10 +186,6 @@ if __name__ == "__main__":
         pathforgeopandasdf = os.path.join(path, pathtoOGpicture.split('/')[1].split('.')[0] + '.shp')
         csvpath = os.path.join(path, pathtoOGpicture.split('/')[1].split('.')[0] + '.csv')
         showoutput=showoutput
-        
-        #initialize csv file
-        df = pd.DataFrame(columns=['name', 'grade', 'holds', 'setter'])
-        df.to_csv(csvpath, index=False)
     
     
     #call to main function
