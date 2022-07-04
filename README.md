@@ -1,7 +1,7 @@
-# shaping_boulders
+# Shaping Boulders
 Shaping Boulder is a browser app where you can define your own routes from a picture of any wall. 
 It consists of a python script and three seperate browser applications:
-- preparation.py : if your setup is very slick this algorithmus recognizes holds on your wall for you. Possible commands are documented in the docstring - use python preparation.py -h in a console in the working directory to find out about it.
+
 - drawing.ipynb : the application to draw shapes that are not properly recognized by the algorithmus
 - editing.ipynb : the application to edit / delete shapes that are not properly recognized by the alrorithmus or wrongly drawn by an operator 
 - app.ipynb : the actual app to define and display boulders
@@ -9,6 +9,21 @@ It consists of a python script and three seperate browser applications:
 # Usage 
 Disclaimer: At the moment the algorithmus is not clever enough to process any given picture. You may need to edit the preprocessed picture.
 But no worries, a handy tool for that is included in the application (drawing.ipynb / editing.ipynb)! 
+
+## preparation.py 
+If your setup is very slick this algorithmus recognizes holds on your wall for you. Possible commands are documented in the docstring.
+
+Use python preparation.py -h in a console in the working directory to find out about it.
+
+## Drawing and editing holds on your wall 
+
+### drawing.ipynb
+The application to draw shapes that are not properly recognized by the algorithmus
+
+### editing.ipynb 
+The application to edit / delete shapes that are not properly recognized by the alrorithmus or wrongly drawn by an operator 
+
+
 
 ## How to start the app
 
