@@ -167,10 +167,10 @@ def main(pathtoOGpicture=pathtoOGpicture,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'possible input arguments for image preparation')
-    parser.add_argument('--in_OG', help = "Path to original input picture")
-    parser.add_argument('--in_FG', help = "Path to preprepared foreground picture")
-    parser.add_argument('--out', help = "Path to output geopandas dataframe")
-    parser.add_argument('--show', help = "show intermediate output steps: True/False")
+    parser.add_argument('--in_OG', help = "Path to original input picture, default './OG_pictures/kilter_board_setting.jpeg'")
+    parser.add_argument('--in_FG', help = "optional: Path to preprepared foreground picture, default './OG_pictures/foreground.jpeg'")
+    parser.add_argument('--out', help = "optional: Path to output geopandas dataframe, default './OG_pictures/geopandas_geometry_kilter_board_new.shp'")
+    parser.add_argument('--show', help = "optional: show intermediate output steps: True/False, default 'False'")
     args = parser.parse_args(sys.argv[1:])
    
     #user-defined input and output paths
