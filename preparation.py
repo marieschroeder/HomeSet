@@ -8,10 +8,11 @@ import pandas as pd
 import geopandas as gpd
 import argparse
 import sys
+import os
+import glob
+import panel as pn
 
-def mask(in_path='./OG_pictures/kilter_board_setting.jpeg', 
-         out_path='./OG_pictures/foreground.jpeg', 
-         showoutput=False
+def mask(in_path, out_path, showoutput=False
         ):
     '''
     Transform an image using threshold,
@@ -58,8 +59,7 @@ def mask(in_path='./OG_pictures/kilter_board_setting.jpeg',
         if cv2.waitKey(0) & 0xFF == ord('q'): 
             cv2.destroyAllWindows()
         
-def contour_recognition(in_path='./OG_pictures/foreground.jpeg', 
-                         out_path='./OG_pictures/contours.jpeg', 
+def contour_recognition(in_path, out_path, 
                          showoutput=False
                        ):
     '''
@@ -113,24 +113,9 @@ def contour_recognition(in_path='./OG_pictures/foreground.jpeg',
             cv2.destroyAllWindows()
     return contours
 
-#def main(pathtoOGpicture='./OG_pictures/kilter_board_setting.jpeg',
-#         pathtoFGpicture='./OG_pictures/foreground.jpeg',
-#         pathforgeopandasdf='./OG_pictures/geopandas_geometry_kilter_board_new.shp',
-#         showoutput=False
-#        ):
-
-#default input and output paths
-pathtoOGpicture='./OG_pictures/kilter_board_setting.jpeg'
-pathtoFGpicture='./OG_pictures/foreground.jpeg'
-pathforgeopandasdf='./OG_pictures/geopandas_geometry_kilter_board_new/geopandas_geometry_kilter_board_new.shp'
-showoutput=False
 
 
-def main(pathtoOGpicture=pathtoOGpicture,
-         pathtoFGpicture=pathtoFGpicture,
-         pathforgeopandasdf=pathforgeopandasdf,
-         showoutput=showoutput
-        ):
+def main(pathtoOGpicture, pathtoFGpicture, pathforgeopandasdf, showoutput):
     '''
     Main function to call picture preprocessing
     _______________________________
@@ -145,9 +130,9 @@ def main(pathtoOGpicture=pathtoOGpicture,
     ''' 
     # preprocess image
     # dissect foreground
-    mask(in_path=pathtoOGpicture, showoutput=showoutput)
+    mask(in_path=pathtoOGpicture, out_path=pathtoFGpicture, showoutput=showoutput)
     # contour retrieval
-    contours = contour_recognition(in_path=pathtoFGpicture, showoutput=showoutput)
+    contours = contour_recognition(in_path=pathtoFGpicture, out_path=pathtocontour, showoutput=showoutput)
 
     # load contours to geopandas dataframe
     
@@ -162,26 +147,50 @@ def main(pathtoOGpicture=pathtoOGpicture,
     
     # saving geopandas dataframe for later use
     p.to_file(pathforgeopandasdf,index=False)
-    if showoutput == True:
-        p.plot()
+    if showoutput == 'True':
+    	import webbrowser
+    	webbrowser.open(pathtocontour)
+    	print(pathtocontour)
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'possible input arguments for image preparation')
-    parser.add_argument('--in_OG', help = "Path to original input picture, default './OG_pictures/kilter_board_setting.jpeg'")
-    parser.add_argument('--in_FG', help = "optional: Path to preprepared foreground picture, default './OG_pictures/foreground.jpeg'")
-    parser.add_argument('--out', help = "optional: Path to output geopandas dataframe, default './OG_pictures/geopandas_geometry_kilter_board_new/geopandas_geometry_kilter_board_new.shp'")
+    parser.add_argument('--input_folder', help = "Path to input folder, default 'ideal_ex'")
     parser.add_argument('--show', help = "optional: show intermediate output steps: True/False, default 'False'")
     args = parser.parse_args(sys.argv[1:])
    
+    #default input and output paths
+    path = 'ideal_ex'
+    showoutput = False
     #user-defined input and output paths
-    if args.in_OG != None:
-        pathtoOGpicture = args.in_OG
-    if args.in_FG != None:
-        pathtoFGpicture = args.in_FG
-    if args.out != None:
-        pathforgeopandasdf = args.out
+    if args.input_folder != None:
+        path = args.input_folder
     if args.show != None:
         showoutput = args.show
+    if (len(glob.glob(os.path.join(path, '*.jpeg'))) != 1) :
+        text = """
+        ## Warning!
+
+        Your folder needs to contain **one and only one** .jpeg file!
+
+        Check your folder and restart the script
+        """
+        
+        print(text)
+        sys.exit()
+    else:        
+        pathtoOGpicture = glob.glob(os.path.join(path, '*.jpeg'))[0]
+        pathtoFGpicture = os.path.join(path, pathtoOGpicture.split('/')[1].split('.')[0] + '_foreground.jpeg')
+        pathtocontour = os.path.join(path, pathtoOGpicture.split('/')[1].split('.')[0] + '_contour.jpeg')
+        pathforgeopandasdf = os.path.join(path, pathtoOGpicture.split('/')[1].split('.')[0] + '.shp')
+        csvpath = os.path.join(path, pathtoOGpicture.split('/')[1].split('.')[0] + '.csv')
+        showoutput=showoutput
+        
+        #initialize csv file
+        df = pd.DataFrame(columns=['name', 'grade', 'holds', 'setter'])
+        df.to_csv(csvpath, index=False)
+    
     
     #call to main function
     main(pathtoOGpicture=pathtoOGpicture,
