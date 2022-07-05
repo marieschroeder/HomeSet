@@ -1,5 +1,5 @@
 # HomeSet
-Shaping Boulder is a browser app where you can define your own routes from a picture of any wall. 
+HomeSet is a browser app where you can define your own routes from a picture of any wall. 
 It consists of a python script and three seperate browser applications:
 
 ## Module description
